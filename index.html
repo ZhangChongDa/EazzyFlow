@@ -6,6 +6,8 @@
     <title>TeleFlow AI - Next Gen MCCM</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://aistudiocdn.com/@xyflow/react@^12.9.3/dist/style.css" />
+
+    <!-- 保留 Tailwind CDN（开发时热更新好用） -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -18,28 +20,26 @@
         },
       }
     </script>
-    <style type="text/tailwindcss">
+
+    <!-- 关键修改：去掉 type="text/tailwindcss"，让 PostCSS 构建时能看到这三行 -->
+    <style>
+      /* 这三行必须放在最前面，且必须在普通 <style> 标签里 */
+      @tailwind base;
+      @tailwind components;
+      @tailwind utilities;
+
+      /* 你原来的所有自定义样式直接搬进来 -->
       @layer base {
         body {
           @apply font-sans bg-slate-50 text-slate-900;
         }
       }
 
-      /* Global Styles moved from index.css for CDN processing */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-      }
+      /* Global Styles */
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
       .glass-panel {
         background: rgba(255, 255, 255, 0.9);
@@ -47,9 +47,7 @@
       }
 
       /* React Flow Customizations */
-      .react-flow__node {
-        font-family: 'Inter', sans-serif;
-      }
+      .react-flow__node { font-family: 'Inter', sans-serif; }
       .react-flow__controls {
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         border: 1px solid #e2e8f0;
@@ -64,27 +62,29 @@
         background: #f8fafc;
       }
     </style>
+
+    <!-- Polyfill -->
     <script>
-      // Polyfill process for browser compatibility
       window.process = { env: {} };
     </script>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
-    "@xyflow/react/": "https://aistudiocdn.com/@xyflow/react@^12.9.3/",
-    "react/": "https://aistudiocdn.com/react@^19.2.1/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
-    "@xyflow/react": "https://aistudiocdn.com/@xyflow/react@^12.9.3",
-    "recharts": "https://aistudiocdn.com/recharts@^3.5.1",
-    "vite": "https://aistudiocdn.com/vite@^7.2.6",
-    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1"
-  }
-}
-</script>
-</head>
+
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.2.1",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+        "@xyflow/react/": "https://aistudiocdn.com/@xyflow/react@^12.9.3/",
+        "react/": "https://aistudiocdn.com/react@^19.2.1/",
+        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+        "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+        "@xyflow/react": "https://aistudiocdn.com/@xyflow/react@^12.9.3",
+        "recharts": "https://aistudiocdn.com/recharts@^3.5.1",
+        "vite": "https://aistudiocdn.com/vite@^7.2.6",
+        "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1"
+      }
+    }
+    </script>
+  </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
