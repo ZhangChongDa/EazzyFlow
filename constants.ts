@@ -129,4 +129,8 @@ export const INITIAL_COUPONS: Coupon[] = [
   { id: 'cp1', name: 'Welcome Back 50% Off', type: 'Discount', value: '50%', totalStock: 10000, claimed: 450, validity: '2023-12-31', status: 'active', description: '50% Discount on next Data Pack purchase.' },
   { id: 'cp2', name: 'Free KFC Burger', type: 'Voucher', value: '1 Unit', totalStock: 500, claimed: 480, validity: '2023-11-15', status: 'active', description: 'Redeemable at any KFC Yangon branch.' },
   { id: 'cp3', name: 'Loyalty Bonus Points', type: 'Points', value: '500 Pts', totalStock: 100000, claimed: 12500, validity: '2024-01-01', status: 'active', description: 'Instant 500 points credit to user wallet.' },
+  { id: 'cp4', name: 'Myanmar Plaza Flash Sale', type: 'Discount', value: '30%', totalStock: 5000, claimed: 120, validity: '2024-06-30', status: 'active', description: '30% off at participating stores in Myanmar Plaza.' },
+  { id: 'cp5', name: 'City Mart Grocery Voucher', type: 'Voucher', value: '5,000 Ks', totalStock: 2000, claimed: 500, validity: '2024-05-15', status: 'active', description: '5,000 MMK discount on groceries.' },
+  { id: 'cp6', name: 'JCGV Cinema Ticket BOGO', type: 'Voucher', value: '1 Ticket', totalStock: 1000, claimed: 850, validity: '2024-04-01', status: 'active', description: 'Buy 1 Get 1 Free for weekend movies.' },
+  { id: 'cp7', name: 'Grab Ride 20% Off', type: 'Discount', value: '20%', totalStock: 10000, claimed: 3000, validity: '2024-12-31', status: 'active', description: 'Discount on next 5 Grab rides.' },
 ];
