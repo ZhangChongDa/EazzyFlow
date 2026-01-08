@@ -9,18 +9,27 @@ import CampaignSimulationLandingPage from './pages/CampaignSimulationLandingPage
 // Create root and render the React app
 const container = document.getElementById('root');
 if (container) {
-  const root = createRoot(container);
-  root.render(
-    <React.StrictMode>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/offer/:offerId" element={<OfferLandingPage />} />
-          <Route path="/campaign/:campaignId/:userId/:productId" element={<CampaignSimulationLandingPage />} />
-        </Routes>
-      </BrowserRouter>
-    </React.StrictMode>
-  );
+  try {
+    console.log('🚀 TeleFlow: Starting React app...');
+    const root = createRoot(container);
+    root.render(
+      <React.StrictMode>
+        <BrowserRouter>
+          <Routes>
+            {/* Specific landing pages */}
+            <Route path="/offer/:offerId" element={<OfferLandingPage />} />
+            <Route path="/campaign/:campaignId/:userId/:productId" element={<CampaignSimulationLandingPage />} />
+
+            {/* Main App - catch all other routes */}
+            <Route path="/*" element={<App />} />
+          </Routes>
+        </BrowserRouter>
+      </React.StrictMode>
+    );
+    console.log('✅ TeleFlow: React app rendered successfully');
+  } catch (err) {
+    console.error("❌ TeleFlow: React root creation failed", err);
+  }
 } else {
-  console.error('Root element not found');
+  console.error("❌ TeleFlow: Root element not found");
 }
