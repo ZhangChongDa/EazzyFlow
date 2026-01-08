@@ -1,0 +1,7 @@
+{
+  "name": "TeleFlow AI MCCM - Published Version",
+  "description": "Next-generation AI-Native Multiple Channel Campaign Management system for Telecom Operators. Features Smart Dashboards, Customer 360, Infinite Campaign Canvas, and GenAI-powered content creation.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

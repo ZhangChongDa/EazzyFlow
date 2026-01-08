@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TeleFlow AI - Next Gen MCCM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://aistudiocdn.com/@xyflow/react@^12.9.3/dist/style.css" />
+
+  <script>
+    // 预注入 process 变量，确保本地编译后的代码在浏览器中不会因为 process 未定义而崩溃
+    window.process = {
+      env: {
+        NODE_ENV: "production",
+        API_KEY: ""
+      }
+    };
+
+    window.onerror = function (msg, url, line, col, error) {
+      console.error("TeleFlow Runtime Error:", msg, "at", line, ":", col);
+      return false;
+    };
+  </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1",
+    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.1/client",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "@xyflow/react": "https://aistudiocdn.com/@xyflow/react@^12.9.3",
+    "@xyflow/react/": "https://aistudiocdn.com/@xyflow/react@^12.9.3/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.474.0",
+    "recharts": "https://aistudiocdn.com/recharts@^3.5.1",
+    "@supabase/supabase-js": "https://aistudiocdn.com/@supabase/supabase-js@^2.48.1",
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
+  <link rel="stylesheet" href="/index.css">
+</head>
+
+<body>
+  <div id="root"></div>
+  <!-- 仅在本地开发或支持 TS 直接运行的环境中使用 index.tsx -->
+  <script type="module" src="./index.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>
