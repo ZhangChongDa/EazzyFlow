@@ -180,7 +180,7 @@ export const emailService = {
             `1. API Key 无效或过期\n` +
             `2. 域名配置问题\n` +
             `3. 发送频率限制\n`;
-          console.warn(helpfulMessage);
+          console.warn(helpfulMessage);  
         }
         
         throw new Error(data.message || 'Resend API failure');
