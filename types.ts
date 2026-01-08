@@ -118,6 +118,8 @@ export interface Offer {
   finalPrice: number;
   imageUrl?: string;
   createdAt?: string;
+  marketingCopy?: string; // AI-generated marketing copy
+  [key: string]: any; // Flexible extension for other offer properties
   // Joined data
   product?: Product; // Base product details
 }

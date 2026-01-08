@@ -19,7 +19,12 @@ export interface Profile {
     tier: 'Crown' | 'Diamond' | 'Platinum' | 'Gold' | 'Silver';
     device_type: string;
     registration_date: string;
-    subscription: 'Prepaid' | 'Postpaid'; // User payment type: Prepaid (预付费) or Postpaid (后付费)
+    created_at?: string; // Optional timestamp field for compatibility
+    status: 'Active' | 'Churned' | 'Inactive' | 'Sleep' | 'Registration' | 'Dormant'; // User status (matches database enum)
+    subscription?: 'Prepaid' | 'Postpaid'; // User payment type: Prepaid (预付费) or Postpaid (后付费)
+    arpu_30d?: number; // Average Revenue Per User (30 days)
+    churn_score?: number; // Churn prediction score (0-1)
+    balance?: number; // Live wallet balance
     accounts?: Account[]; // Join definition
 }
 
@@ -31,4 +36,10 @@ export interface CampaignLog {
     status: 'Success' | 'Failed';
     executed_at?: string;
     metadata?: any;
+}
+
+export interface Offer {
+    id?: string;
+    marketingCopy?: string;
+    [key: string]: any; // Flexible extension for other offer properties
 }

@@ -251,16 +251,16 @@ export const useCampaignSimulator = () => {
       const subject = `🎁 Exclusive Offer: ${offerName}`;
       
       const emailResult = await emailService.sendMarketingEmail(
-        targetEmail,
+        targetEmail || 'delivered@resend.dev',
         subject,
         greeting,
-        marketingCopy,
+        marketingCopy || `Don't miss out on this exclusive offer: ${offerName}!`,
         magicLink,
         'Claim Offer Now'
-      );
+      ) as { success: boolean; error?: string; messageId?: string; isMock?: boolean };
 
       if (!emailResult.success) {
-        throw new Error('Failed to send email');
+        throw new Error(emailResult.error || 'Failed to send email');
       }
 
       setLiveStatus({ stage: 'sent', message: `Email sent to ${targetEmail}` });
@@ -313,7 +313,7 @@ export const useCampaignSimulator = () => {
               onStatusUpdate?.({ stage: 'converted', message: 'Conversion! User purchased offer.' });
               
               // ✅ Task 3: Execute Post-Purchase Workflow
-              await executePostPurchaseWorkflow(campaignId, selectedUser.id, targetEmail);
+              await executePostPurchaseWorkflow(campaignId, selectedUser.id, targetEmail, onStatusUpdate);
             }
           }
         )
@@ -344,7 +344,8 @@ export const useCampaignSimulator = () => {
   const executePostPurchaseWorkflow = async (
     campaignId: string,
     userId: string,
-    userEmail?: string
+    userEmail?: string,
+    onStatusUpdate?: (status: { stage: string; message: string }) => void
   ) => {
     try {
       console.log(`[Campaign Simulator] Starting Post-Purchase Workflow for campaign ${campaignId}`);
@@ -433,13 +434,13 @@ export const useCampaignSimulator = () => {
         : `${origin}/campaign/${campaignId}/${userId}/${upsellProductId}`;
 
       const emailResult = await emailService.sendMarketingEmail(
-        userEmail || 'demo@example.com',
+        userEmail || 'delivered@resend.dev',
         `🎁 ${upsellOfferName} - Exclusive Upsell`,
         'Hi there!',
         upsellMarketingCopy,
         upsellMagicLink,
         'Claim Upsell Offer'
-      );
+      ) as { success: boolean; error?: string; messageId?: string; isMock?: boolean };
 
       if (emailResult.success) {
         // Log the upsell send event
@@ -462,7 +463,7 @@ export const useCampaignSimulator = () => {
         onStatusUpdate?.({ stage: 'converted', message: 'Upsell email sent successfully!' });
         console.log(`[Campaign Simulator] ✅ Upsell email sent to ${userEmail}`);
       } else {
-        throw new Error('Failed to send upsell email');
+        throw new Error(emailResult.error || 'Failed to send upsell email');
       }
 
     } catch (err: any) {

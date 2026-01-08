@@ -1,5 +1,48 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+// Error Boundary Component
+class DashboardErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error?: Error }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    console.error('🔴 Dashboard Error Boundary caught error:', error);
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('🔴 Dashboard Error Boundary details:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-red-50">
+          <div className="text-center p-8 bg-white rounded-lg shadow-lg">
+            <h1 className="text-2xl font-bold text-red-600 mb-4">Dashboard Error</h1>
+            <p className="text-gray-600 mb-4">Something went wrong while loading the dashboard.</p>
+            <details className="text-left">
+              <summary className="cursor-pointer text-blue-600 hover:text-blue-800">
+                Error Details
+              </summary>
+              <pre className="mt-2 p-2 bg-gray-100 rounded text-xs overflow-auto max-w-md">
+                {this.state.error?.message}
+              </pre>
+            </details>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 import {
   Activity,
   Megaphone,
@@ -34,8 +77,10 @@ import { useDashboardCampaignAutoSend } from '../hooks/useDashboardCampaignAutoS
 import ChatAssistant from './ChatAssistant';
 import { supabase } from '../services/supabaseClient';
 
-export default function Dashboard() {
+function DashboardContent() {
   const navigate = useNavigate();
+
+  console.log('🟡 Dashboard component rendering...');
 
   // Data Hooks
   const { metrics } = useBusinessOverview();
@@ -194,6 +239,8 @@ export default function Dashboard() {
       console.error('Error deleting campaign:', error);
     }
   };
+
+  console.log('🟢 Dashboard about to render JSX...', { metrics, tasks, campaigns });
 
   return (
     <div className="bg-slate-50 text-slate-800 antialiased h-screen flex overflow-hidden selection:bg-indigo-100 selection:text-indigo-900 font-sans">
@@ -687,5 +734,13 @@ export default function Dashboard() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <DashboardErrorBoundary>
+      <DashboardContent />
+    </DashboardErrorBoundary>
   );
 }

@@ -15,16 +15,24 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const [error, setError] = useState<string | null>(null);
   const [isSignUp, setIsSignUp] = useState(false);
 
-  // ✅ Auto-redirect if already logged in
+  // ✅ Auto-redirect if already logged in (only if accessed directly via /login route)
   useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate('/dashboard', { replace: true });
-      }
-    };
-    checkSession();
-  }, [navigate]);
+    // Only auto-redirect if user navigated directly to login page
+    // Don't redirect if login component is shown due to auth guard
+    if (location.pathname === '/login') {
+      const checkSession = async () => {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) {
+            navigate('/dashboard', { replace: true });
+          }
+        } catch (error) {
+          // Ignore session check errors
+        }
+      };
+      checkSession();
+    }
+  }, [navigate, location.pathname]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

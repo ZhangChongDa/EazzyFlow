@@ -4,7 +4,15 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+// Validate environment variables
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error('❌ Missing Supabase configuration!');
+  console.error('Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file');
+  console.error('Get these values from: https://supabase.com/dashboard/project/uyvdhsswniwmcmeahofn/settings/api');
+}
+
+// Create Supabase client (will work even with invalid keys, but operations will fail)
+export const supabase = createClient(SUPABASE_URL || 'https://placeholder.supabase.co', SUPABASE_ANON_KEY || 'placeholder_key', {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
@@ -12,7 +20,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   },
   global: {
     headers: {
-      'apikey': SUPABASE_ANON_KEY,
+      'apikey': SUPABASE_ANON_KEY || 'placeholder_key',
     },
   },
 });

@@ -35,7 +35,14 @@ export const campaignExecutionService = {
         <p>This automated action has been initialized.</p>
       `;
 
-            const emailResult = await emailService.sendMarketingEmail(targetEmail, emailSubject, emailBody) as any;
+            const emailResult = await emailService.sendMarketingEmail(
+              targetEmail,
+              emailSubject,
+              'Hi there!',
+              emailBody,
+              `https://teleflow-ai-mccm.vercel.app/dashboard`,
+              'View Dashboard'
+            ) as { success: boolean; messageId?: string; error?: string; isMock?: boolean };
 
             // 2. Log to Supabase "campaign_logs"
             // Note: If the table doesn't exist in the demo DB, this might fail silently or error.

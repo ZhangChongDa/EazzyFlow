@@ -6,30 +6,21 @@ import App from './App.tsx';
 import OfferLandingPage from './pages/OfferLandingPage.tsx';
 import CampaignSimulationLandingPage from './pages/CampaignSimulationLandingPage.tsx';
 
-const mount = document.getElementById('root');
-
-if (mount) {
-  try {
-    const root = createRoot(mount);
-    root.render(
-      <React.StrictMode>
-        <BrowserRouter>
-          <Routes>
-            {/* ✅ Phase 2: Marketing Offer Landing Page */}
-            <Route path="/offer/:offerId" element={<OfferLandingPage />} />
-            
-            {/* ✅ Phase 1: Campaign Simulation Landing Page */}
-            <Route path="/campaign/:campaignId/:userId/:productId" element={<CampaignSimulationLandingPage />} />
-            
-            {/* Main App */}
-            <Route path="/*" element={<App />} />
-          </Routes>
-        </BrowserRouter>
-      </React.StrictMode>
-    );
-  } catch (err) {
-    console.error("TeleFlow: React root creation failed", err);
-  }
+// Create root and render the React app
+const container = document.getElementById('root');
+if (container) {
+  const root = createRoot(container);
+  root.render(
+    <React.StrictMode>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/offer/:offerId" element={<OfferLandingPage />} />
+          <Route path="/campaign/:campaignId/:userId/:productId" element={<CampaignSimulationLandingPage />} />
+        </Routes>
+      </BrowserRouter>
+    </React.StrictMode>
+  );
 } else {
-  console.error("TeleFlow: Root element not found");
+  console.error('Root element not found');
 }

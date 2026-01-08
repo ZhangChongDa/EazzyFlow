@@ -21,6 +21,8 @@ import { CanvasNodesProvider, useCanvasNodes } from '../contexts/CanvasNodesCont
 import { ChatAssistantProvider, useChatAssistant } from '../contexts/ChatAssistantContext';
 
 const LayoutContentInner: React.FC = () => {
+  console.log('🔵 LayoutContentInner rendering...');
+
   const [user, setUser] = useState<any>(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [dbStatus, setDbStatus] = useState<'connected' | 'empty' | 'error'>('empty');
@@ -89,6 +91,8 @@ const LayoutContentInner: React.FC = () => {
     setUser(null);
     window.location.href = '/login';
   };
+
+  console.log('🟣 LayoutContentInner about to render JSX...');
 
   return (
     <div className="min-h-screen bg-slate-50 flex font-sans text-slate-900">

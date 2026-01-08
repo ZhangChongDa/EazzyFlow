@@ -63,6 +63,7 @@ const ProductCatalogWrapper: React.FC = () => {
 };
 
 const DashboardWrapper: React.FC = () => {
+  console.log('🟠 DashboardWrapper rendering...');
   return (
     <div className="h-full">
       <Dashboard />
@@ -111,10 +112,21 @@ const App: React.FC = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        // Check if Supabase is properly configured
+        if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY ||
+            import.meta.env.VITE_SUPABASE_ANON_KEY?.includes('placeholder')) {
+          console.warn('⚠️ Supabase not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env file');
+          setUser(null); // Allow app to continue without auth
+          setLoading(false);
+          return;
+        }
+
         const { data: { session } } = await supabase.auth.getSession();
         setUser(session?.user ?? null);
       } catch (error) {
         console.error('Auth check failed:', error);
+        // Don't fail completely, allow app to continue
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -122,12 +134,15 @@ const App: React.FC = () => {
 
     checkAuth();
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+    // Listen for auth changes (only if Supabase is configured)
+    if (import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY &&
+        !import.meta.env.VITE_SUPABASE_ANON_KEY?.includes('placeholder')) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null);
+      });
 
-    return () => subscription.unsubscribe();
+      return () => subscription.unsubscribe();
+    }
   }, []);
 
   // Show login screen if not authenticated (except for login page and landing pages)
@@ -160,8 +175,27 @@ const App: React.FC = () => {
         } 
       />
       
+      {/* Root route - show appropriate content based on auth status */}
+      <Route path="/" element={
+        loading ? (
+          <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+            <div className="text-center">
+              <div className="w-8 h-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading...</p>
+            </div>
+          </div>
+        ) : user ? (
+          <Navigate to="/dashboard" replace />
+        ) : (
+          <Login onLoginSuccess={async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            setUser(session?.user ?? null);
+          }} />
+        )
+      } />
+
       {/* Protected Routes (require authentication) */}
-      {!user && !location.pathname.startsWith('/login') && !location.pathname.startsWith('/offer/') && !location.pathname.startsWith('/campaign/') ? (
+      {!user && !loading && !location.pathname.startsWith('/login') && !location.pathname.startsWith('/offer/') && !location.pathname.startsWith('/campaign/') ? (
         <Route path="*" element={
           <Login onLoginSuccess={async () => {
             const { data: { session } } = await supabase.auth.getSession();
@@ -170,7 +204,6 @@ const App: React.FC = () => {
         } />
       ) : (
         <Route element={<Layout />}>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<DashboardWrapper />} />
           <Route path="/campaign-canvas" element={<CampaignCanvasWrapper />} />
           <Route path="/content-studio" element={<ContentStudioWrapper />} />
