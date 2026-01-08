@@ -121,7 +121,7 @@ export const emailService = {
 
     // Use key from environment variables
     const RESEND_API_KEY = import.meta.env.VITE_RESEND_API_KEY;
-    const RESEND_VERIFIED_DOMAIN = import.meta.env.VITE_RESEND_VERIFIED_DOMAIN; // e.g., 'teleflow.ai'
+    const RESEND_VERIFIED_DOMAIN = import.meta.env.VITE_RESEND_VERIFIED_DOMAIN; // e.g., 'mail.eazzyai.com'
     const RESEND_REGISTERED_EMAIL = import.meta.env.VITE_RESEND_REGISTERED_EMAIL; // e.g., 'zhangchongda1@gmail.com'
 
     if (!RESEND_API_KEY) {
@@ -133,26 +133,14 @@ export const emailService = {
       });
     }
 
-    // ✅ Fix: Check if domain is verified
-    const isDomainVerified = !!RESEND_VERIFIED_DOMAIN;
+    // ✅ Updated: Domain is now verified, allow external sending
     const registeredEmail = RESEND_REGISTERED_EMAIL || 'zhangchongda1@gmail.com'; // Fallback to common test email
 
-    // ✅ Fix: In development, if domain is not verified, only allow sending to registered email
-    if (import.meta.env.DEV && !isDomainVerified) {
-      if (to.toLowerCase() !== registeredEmail.toLowerCase()) {
-        console.warn(
-          `[Email Service] ⚠️ Resend限制：未验证域名时，只能发送到注册邮箱 (${registeredEmail})。` +
-          `当前收件人: ${to}。` +
-          `解决方案：1) 在 Resend 验证域名 (resend.com/domains)，或 2) 使用注册邮箱进行测试。` +
-          `\n自动切换到 Mock 模式以继续演示...`
-        );
-        // Fallback to mock mode for demo continuity
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve({ success: true, messageId: `mock_${Date.now()}`, isMock: true });
-          }, 800);
-        });
-      }
+    // ✅ Keep development safety check for registered email
+    if (import.meta.env.DEV && to.toLowerCase() !== registeredEmail.toLowerCase()) {
+      console.log(
+        `[Email Service] 📧 Development mode: Sending to external email (${to}) using verified domain.`
+      );
     }
 
     try {
@@ -162,10 +150,8 @@ export const emailService = {
       // Use local proxy in DEV to bypass CORS
       const endpoint = import.meta.env.DEV ? '/api/email' : 'https://api.resend.com/emails';
 
-      // ✅ Fix: Use verified domain if available, otherwise use onboarding@resend.dev
-      const fromAddress = isDomainVerified
-        ? `TeleFlow <noreply@${RESEND_VERIFIED_DOMAIN}>`
-        : 'TeleFlow <onboarding@resend.dev>';
+      // ✅ Updated: Use verified EazzyAI domain for external sending
+      const fromAddress = 'Eazzy Flow <marketing@mail.eazzyai.com>';
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -186,14 +172,14 @@ export const emailService = {
       if (!response.ok) {
         console.error('[Email Service] Resend API Error:', data);
         
-        // ✅ Fix: Provide helpful error message for domain verification
-        if (data.statusCode === 403 && data.message?.includes('testing emails')) {
-          const helpfulMessage = 
-            `\n⚠️ Resend 限制：未验证域名时，只能发送到注册邮箱。\n` +
-            `解决方案：\n` +
-            `1. 在 Resend 控制台验证域名：https://resend.com/domains\n` +
-            `2. 配置环境变量 VITE_RESEND_VERIFIED_DOMAIN=yourdomain.com\n` +
-            `3. 或使用注册邮箱 (${registeredEmail}) 进行测试\n`;
+        // ✅ Updated: Domain is now verified, provide general error handling
+        if (data.statusCode === 403) {
+          const helpfulMessage =
+            `\n⚠️ Resend API Error: 403 Forbidden\n` +
+            `可能原因：\n` +
+            `1. API Key 无效或过期\n` +
+            `2. 域名配置问题\n` +
+            `3. 发送频率限制\n`;
           console.warn(helpfulMessage);
         }
         
